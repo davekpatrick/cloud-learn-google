@@ -1,0 +1,19 @@
+
+# Add 'repo' label to any root file changes
+repo:
+- '*'
+# 
+git:
+- any: ['**/.gitignore']
+#
+workflow:
+- any: ['.github/**/*']
+#
+code:
+- any: ['**/*.sh']
+#
+documentation:
+- any: ['**/*.md']
+
+...
+# EOF

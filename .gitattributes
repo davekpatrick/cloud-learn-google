@@ -1,0 +1,17 @@
+# BOF 
+# ---------------------------------------------------
+# git - attributes file
+# doc: https://git-scm.com/docs/gitignore
+# ---------------------------------------------------
+# This file is used to tell Git whether or not certain files should be 
+# treated as binary or text, and the proper line ending conversions to 
+# perform if they are text files. 
+# 
+# See the following page for more information: 
+# http://git-scm.com/book/en/Customizing-Git-Git-Attributes 
+# 
+# This file is used by the following projects: 
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text eol=lf
+
+# EOF 
