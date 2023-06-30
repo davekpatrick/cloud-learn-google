@@ -1,22 +1,24 @@
 #!/usr/bin/perl -w
+# requires: gcloud binary
+#           cloudasset.googleapis.com API
 use strict;
 use warnings;
 use IO::Handle;
 use utf8;
 use JSON;
 use File::Path qw( make_path );
-# 
+# variables
 binmode STDOUT, ":utf8"; 
 my $dataDirectory = 'data';
 my %gcpProjectResources = ();
 my $projectCount = 0;
 my $projectAssetCount = 0;
 my $projectList = qx( gcloud projects list --format='value(projectId)' );
-# 
+# ensure we have a "data" directory to store the results
 if ( ! -d $dataDirectory ) {
     make_path $dataDirectory or die "Failed to create path: $dataDirectory";
 }
-#
+# loop through all projects accessible to the current user
 foreach my $projectId (split /[\n]+/, $projectList) {
   print "projectId:[$projectId]\n";
   $projectCount++;
@@ -45,15 +47,15 @@ foreach my $projectId (split /[\n]+/, $projectList) {
     $gcpProjectResources{$projectId}{$assetType}{"assets"}[$gcpProjectResources{$projectId}{$assetType}{"count"} - 1]{"index"} = $gcpProjectResources{$projectId}{$assetType}{"count"};
     $gcpProjectResources{$projectId}{$assetType}{"assets"}[$gcpProjectResources{$projectId}{$assetType}{"count"} - 1]{"name"} = $assetName;
     print sprintf('assetType:[%s] count:[%s]', $assetType, $gcpProjectResources{$projectId}{$assetType}{"count"} );
-    # get asset details
+    # get resource details
     my $assetResource = qx( gcloud asset search-all-resources --scope=projects/$projectId --query='name=$assetName' --read-mask='*' --format=json );
     my $assetResourceJson = decode_json($assetResource);
-    # capture asset details
+    # capture resorce details
     $gcpProjectResources{$projectId}{$assetType}{"assets"}[$gcpProjectResources{$projectId}{$assetType}{"count"} - 1]{"createTime"} = $assetResourceJson->[0]{"createTime"};
     $gcpProjectResources{$projectId}{$assetType}{"assets"}[$gcpProjectResources{$projectId}{$assetType}{"count"} - 1]{"resource"} = $assetResourceJson->[0]{"versionedResources"}[0]{"resource"};
     print "\r" . ' ' x 120 . "\r";
   } 
-  # write out the project assets
+  # write out the project asset and resource details
   my $json = encode_json( $gcpProjectResources{$projectId} );
   print $FILE_gcpProjectResources $json;
   close( $FILE_gcpProjectResources );
