@@ -48,7 +48,7 @@ foreach my $projectId (split /[\n]+/, $projectList) {
     $gcpProjectResources{$projectId}{$assetType}{"assets"}[$gcpProjectResources{$projectId}{$assetType}{"count"} - 1]{"name"} = $assetName;
     print sprintf('assetType:[%s] count:[%s]', $assetType, $gcpProjectResources{$projectId}{$assetType}{"count"} );
     # get resource details
-    my $assetResource = qx( gcloud asset search-all-resources --scope=projects/$projectId --query='name=$assetName' --read-mask='*' --format=json );
+    my $assetResource = qx( gcloud asset search-all-resources --scope=projects/$projectId  --query='name="$assetName"' --read-mask='*' --format=json );
     my $assetResourceJson = decode_json($assetResource);
     # capture resorce details
     $gcpProjectResources{$projectId}{$assetType}{"assets"}[$gcpProjectResources{$projectId}{$assetType}{"count"} - 1]{"createTime"} = $assetResourceJson->[0]{"createTime"};
